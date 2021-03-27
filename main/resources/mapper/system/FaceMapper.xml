@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FaceMapper">
+    
+    <resultMap type="Face" id="FaceResult">
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="idtype"    column="idtype"    />
+        <result property="idnum"    column="idnum"    />
+        <result property="phonenum"    column="phonenum"    />
+        <result property="registertime"    column="registertime"    />
+        <result property="faceid"    column="faceid"    />
+    </resultMap>
+
+    <sql id="selectFaceVo">
+        select name, sex, idtype, idnum, phonenum, registertime, faceid from face
+    </sql>
+
+    <select id="selectFaceList" parameterType="Face" resultMap="FaceResult">
+        <include refid="selectFaceVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="idtype != null  and idtype != ''"> and idtype = #{idtype}</if>
+            <if test="idnum != null  and idnum != ''"> and idnum = #{idnum}</if>
+            <if test="phonenum != null  and phonenum != ''"> and phonenum = #{phonenum}</if>
+            <if test="registertime != null "> and registertime = #{registertime}</if>
+            <if test="faceid != null  and faceid != ''"> and faceid = #{faceid}</if>
+        </where>
+    </select>
+    
+    <select id="selectFaceById" parameterType="String" resultMap="FaceResult">
+        <include refid="selectFaceVo"/>
+        where name = #{name}
+    </select>
+        
+    <insert id="insertFace" parameterType="Face">
+        insert into face
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="idtype != null and idtype != ''">idtype,</if>
+            <if test="idnum != null and idnum != ''">idnum,</if>
+            <if test="phonenum != null and phonenum != ''">phonenum,</if>
+            <if test="registertime != null">registertime,</if>
+            <if test="faceid != null and faceid != ''">faceid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="idtype != null and idtype != ''">#{idtype},</if>
+            <if test="idnum != null and idnum != ''">#{idnum},</if>
+            <if test="phonenum != null and phonenum != ''">#{phonenum},</if>
+            <if test="registertime != null">#{registertime},</if>
+            <if test="faceid != null and faceid != ''">#{faceid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFace" parameterType="Face">
+        update face
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="idtype != null and idtype != ''">idtype = #{idtype},</if>
+            <if test="idnum != null and idnum != ''">idnum = #{idnum},</if>
+            <if test="phonenum != null and phonenum != ''">phonenum = #{phonenum},</if>
+            <if test="registertime != null">registertime = #{registertime},</if>
+            <if test="faceid != null and faceid != ''">faceid = #{faceid},</if>
+        </trim>
+        where name = #{name}
+    </update>
+
+    <delete id="deleteFaceById" parameterType="String">
+        delete from face where name = #{name}
+    </delete>
+
+    <delete id="deleteFaceByIds" parameterType="String">
+        delete from face where name in 
+        <foreach item="name" collection="array" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </delete>
+</mapper>
